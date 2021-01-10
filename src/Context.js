@@ -5,6 +5,10 @@ const Context = React.createContext();
 
 export class Provider extends Component {
 
+  state = {
+    authenticatedUser: null
+  };
+
   constructor() {
     super();
     //this allows Data utility methods to be available throughout the app via Context
@@ -12,7 +16,10 @@ export class Provider extends Component {
   }
 
   render() {
+    const { authenticatedUser } = this.state;
+
     const value = {
+        authenticatedUser,
         data: this.data,
         actions: {
             signIn: this.signIn
@@ -28,6 +35,13 @@ export class Provider extends Component {
   
   signIn = async (username, password) => {
     const user = await this.data.getUser(username, password);
+    if (user !== null) {
+        this.setState(() => {
+            return {
+                authenticatedUser: user,
+            };
+        });
+    }
     return user;
   }
 
